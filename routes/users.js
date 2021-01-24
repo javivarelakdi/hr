@@ -6,7 +6,7 @@ const User = require("../models/user");
 
 const router = express.Router();
 
-// return list of users
+// returns list of users
 router.get("/", (req, res) => {
     User.find(function (err, users) {
         if (err)
@@ -22,6 +22,7 @@ router.get("/", (req, res) => {
     });
 });
 
+// CREATE user POST action
 router.post("/", async (req, res, next) => {
     const {
         username,
@@ -71,7 +72,7 @@ router.get("/:id", (req, res, next) => {
         .catch(next);
 });
 
-// update user POST action
+// UPDATE user POST action
 router.post("/:id", async (req, res, next) => {
     const { 
         username,
