@@ -1,10 +1,19 @@
-/* eslint-disable no-underscore-dangle */
 const express = require("express");
 const bcrypt = require("bcrypt");
 const bcryptSalt = 10;
 const User = require("../models/user");
 
 const router = express.Router();
+
+const checkIfLoggedIn = (req, res, next) => {
+    if (req.session.currentUser) {
+        next();
+    } else {
+        res.status(401).json({ code: "unauthorized" });
+    }
+};
+
+router.use(checkIfLoggedIn);
 
 // returns list of users
 router.get("/", (req, res) => {
@@ -20,45 +29,6 @@ router.get("/", (req, res) => {
             data: users       
         });
     });
-});
-
-// CREATE user POST action
-router.post("/", async (req, res, next) => {
-    const {
-        username,
-        email,
-        password,
-        imgUrl,
-        basedCountry,
-        about,
-        remainingDays,
-        role,
-        requests,
-        companies
-    } = req.body;
-    try {
-        const user = await User.findOne({ username });
-        if (user) {
-          return res.status(422).json({ code: "username-not-unique" });
-        }
-        const salt = bcrypt.genSaltSync(bcryptSalt);
-        const hashedPassword = bcrypt.hashSync(password, salt);
-        const newUser = await User.create({
-            username,
-            email,
-            password: hashedPassword,
-            imgUrl,
-            basedCountry,
-            about,
-            remainingDays,
-            role,
-            requests,
-            companies
-        });
-        return res.json(newUser);
-    } catch (error) {
-        next(error);
-    }
 });
 
 // shows specific user, still to be populated with requests and companies
