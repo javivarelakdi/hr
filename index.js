@@ -17,6 +17,9 @@ const session = require("express-session");
 
 //import mongoose
 let mongoose = require('mongoose');
+const cors = require("cors");
+
+
 
 //Assign port
 let port = process.env.PORT || 8080;
@@ -29,6 +32,13 @@ app.use(bodyParser.urlencoded({
     extended: false
 }));
 app.use(bodyParser.json());
+
+app.use(
+    cors({
+      credentials: true,
+      origin: "http://localhost:3000"
+    })
+);
 
 //configure express session
 app.use(
@@ -49,9 +59,6 @@ app.use("/users", usersRouter);
 // app.use("/events", eventsRouter);
 // app.use("/chats", chatsRouter);
 
-// Welcome message
-app.get('/', (req, res) => res.send('Welcome to Express'));
-
 // Launch app to the specified port
 app.listen(port, function() {
     console.log("Running FirstRest on Port "+ port);
@@ -66,3 +73,5 @@ mongo.then(() => {
 }, error => {
     console.log(error, 'error');
 })
+
+
